@@ -5,8 +5,8 @@ from .cost_getter import get_cost_of_deck
 from .cards_placer import place_cards
 
 
-def create_picture(deck_code):
-    response, deck_class = retrieve_deck(deck_code)
+async def create_picture(deck_code):
+    response, deck_class = await retrieve_deck(deck_code)
 
     download_cards(response['cards'])
     counters, mana = count_cards(response['cards'])

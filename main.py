@@ -8,6 +8,9 @@ import os
 
 import discord
 from discord.ext import commands
+import logging
+
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 
 client = commands.Bot(command_prefix="/",
@@ -36,28 +39,31 @@ async def on_ready():
 
 @client.event
 async def on_message(message: discord.message.Message):
-    text = message.content.split()
+    try:
+        text = message.content.split()
 
-    start_time = datetime.datetime.now()
+        start_time = datetime.datetime.now()
 
-    for word in text:
-        if word[:2] == 'AA':
-            ctx: discord.ext.commands.context.Context = await client.get_context(message)
+        for word in text:
+            if word[:2] == 'AA':
+                ctx: discord.ext.commands.context.Context = await client.get_context(message)
 
-            image = create_picture(word)
+                image = await create_picture(word)
 
-            x, y = image.size
-            image = image.resize((int(x / 1.2), int(y / 1.2)))
+                x, y = image.size
+                image = image.resize((int(x / 1.2), int(y / 1.2)))
 
-            name = random.randint(1000000, 10000000)
+                name = random.randint(1000000, 10000000)
 
-            image.save(f"{name}.png", format="PNG")
+                image.save(f"{name}.png", format="PNG")
 
-            await ctx.send(file=discord.File(f"{name}.png"))
+                await ctx.send(file=discord.File(f"{name}.png"))
 
-            os.remove(f"{name}.png")
+                os.remove(f"{name}.png")
 
-            print(datetime.datetime.now() - start_time)
+                print(datetime.datetime.now() - start_time)
+    except Exception as e:
+        print(f"ERR: {e}")
 
 
-client.run(TOKEN)
+client.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)

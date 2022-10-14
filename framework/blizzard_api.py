@@ -1,8 +1,6 @@
-import time
+import asyncio
 
 import requests
-
-from db.config import BATTLE_NET_TOKEN
 
 
 class BlizzardAPI:
@@ -26,34 +24,34 @@ class BlizzardAPI:
 
         return response.json()["access_token"]
 
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         response = None
 
         while not response:
             try:
                 response = self.session.get(*args, **kwargs)
             except requests.exceptions.JSONDecodeError:
-                time.sleep(5)
+                await asyncio.sleep(5)
 
         return response
 
-    def get_from_code(self, deck_code):
+    async def get_from_code(self, deck_code):
         params = {
             'locale': self.locale,
             'code': deck_code,
             'access_token': self.access_token,
         }
-        response = self.get(self.url + "/deck", params=params)
+        response = await self.get(self.url + "/deck", params=params)
         json = response.json()
 
         return json
 
-    def get_card_from_id(self, card_id):
+    async def get_card_from_id(self, card_id):
         params = {
             'locale': self.locale,
             'access_token': self.access_token,
         }
-        response = self.get(self.url + f"/cards/{card_id}", params=params)
+        response = await self.get(self.url + f"/cards/{card_id}", params=params)
         json = response.json()
 
         return json
