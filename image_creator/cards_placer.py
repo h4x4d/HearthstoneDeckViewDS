@@ -3,8 +3,10 @@ from PIL import Image, ImageDraw
 from db.config import FOLDER
 from db.font import FONT
 
+from .place_runes import place_runes
 
-def place_cards(counters, mana, class_id, deck_cost):
+
+def place_cards(counters, mana, class_id, deck_cost, response):
     if len(counters) <= 18:
         size = 500
         water = Image.open('x2.png').resize((214, 121))
@@ -46,5 +48,8 @@ def place_cards(counters, mana, class_id, deck_cost):
 
     draw = ImageDraw.ImageDraw(image)
     draw.text((170, 2205), str(deck_cost), (255, 255, 255), FONT)
+
+    if class_id == 1:
+        image = place_runes(image, response)
 
     return image

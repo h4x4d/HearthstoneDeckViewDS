@@ -8,9 +8,6 @@ import os
 
 import discord
 from discord.ext import commands
-import logging
-
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 
 client = commands.Bot(command_prefix="/",
@@ -66,4 +63,4 @@ async def on_message(message: discord.message.Message):
         print(f"ERR: {e}")
 
 
-client.run(TOKEN, log_handler=handler, log_level=logging.DEBUG)
+client.run(TOKEN)

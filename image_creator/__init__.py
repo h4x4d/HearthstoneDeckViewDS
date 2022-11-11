@@ -13,6 +13,6 @@ async def create_picture(deck_code):
 
     cost = get_cost_of_deck(response)
 
-    image = place_cards(counters, mana, deck_class, cost)
+    image = place_cards(counters, mana, deck_class, cost, response)
 
     return image
