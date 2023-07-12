@@ -1,6 +1,11 @@
+import os
 
-TOKEN = ""
+from dotenv import load_dotenv
 
-BATTLE_NET_TOKEN = ""
+load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
+
+BATTLE_NET_TOKEN = os.getenv("BATTLE_NET_TOKEN")
 
 FOLDER = "cards/"

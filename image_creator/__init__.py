@@ -1,18 +1,20 @@
-from .deck_retriever import retrieve_deck
-from .cards_downloader import download_cards
 from .card_counter import count_cards
-from .cost_getter import get_cost_of_deck
+from .cards_downloader import download_cards
 from .cards_placer import place_cards
+from .cost_getter import get_cost_of_deck
+from .deck_retriever import retrieve_deck
 
 
 async def create_picture(deck_code):
-    response, deck_class = await retrieve_deck(deck_code)
+    response, deck_class, sideboard = await retrieve_deck(deck_code)
+    if response == 0:
+        return None
 
-    download_cards(response['cards'])
-    counters, mana = count_cards(response['cards'])
+    await download_cards(response["cards"] + sideboard)
+    counters, mana = await count_cards(response["cards"] + sideboard)
 
-    cost = get_cost_of_deck(response)
+    cost = await get_cost_of_deck(response["cards"] + sideboard)
 
-    image = place_cards(counters, mana, deck_class, cost, response)
+    image = await place_cards(counters, mana, deck_class, cost, response)
 
     return image

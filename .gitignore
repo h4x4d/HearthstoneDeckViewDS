@@ -1,3 +1,9 @@
-./cards
-./.idea
-./venv
+.idea/*
+.idea
+
+.env
+
+venv/
+env/
+
+cards/
