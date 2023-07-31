@@ -42,7 +42,9 @@ async def on_message(message: discord.message.Message):
 
         for word in text:
             if word[:2] == "AA":
-                if word in codes and datetime.datetime.now() - codes[word] < datetime.timedelta(seconds=30):
+                if word in codes and \
+                        datetime.datetime.now() - codes[word] < \
+                        datetime.timedelta(seconds=30):
                     return
                 codes[word] = datetime.datetime.now()
 
