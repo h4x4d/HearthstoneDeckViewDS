@@ -16,7 +16,7 @@ Bot which creates pictures like this:
 # Installing
 ## 1. Clone repo
 ```
-https://github.com/h4x4d/HearthstoneDeckView.git
+https://github.com/h4x4d/HearthstoneDeckViewDS.git
 ```
 ## 2. Install dependencies
 ### 2.1. Via poetry
@@ -25,7 +25,7 @@ poetry install
 ```
 ### 2.2. Via default python
 ``` 
-pip install -r requierements.txt
+pip install -r requirements.txt
 ```
 ### 3. Set up env variables
 Create file called ".env" and fill it like example showed in file ".env-example"
