@@ -12,7 +12,6 @@ from image_creator import create_picture
 client = commands.Bot(command_prefix="/",
                       activity=discord.Game(name="Analyzing decks"),
                       intents=discord.Intents.all())
-codes = {}
 
 @client.event
 async def on_ready():
@@ -36,18 +35,14 @@ async def on_ready():
 @client.event
 async def on_message(message: discord.message.Message):
     try:
+        if message.author.bot:
+            return
         text = message.content.split()
 
         start_time = datetime.datetime.now()
 
         for word in text:
             if word[:2] == "AA":
-                if word in codes and \
-                        datetime.datetime.now() - codes[word] < \
-                        datetime.timedelta(seconds=30):
-                    return
-                codes[word] = datetime.datetime.now()
-
                 ctx: discord.ext.commands.context.Context = \
                     await client.get_context(message)
 
