@@ -2,7 +2,9 @@ import datetime
 import os
 import random
 
-import grequests
+from gevent.monkey import patch_all
+patch_all(thread=False, select=False)
+
 import discord
 from discord.ext import commands
 
@@ -47,6 +49,9 @@ async def on_message(message: discord.message.Message):
                     await client.get_context(message)
 
                 image = await create_picture(word)
+
+                if not image:
+                    return
 
                 x, y = image.size
                 image = image.resize((int(x / 1.2), int(y / 1.2)))
