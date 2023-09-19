@@ -13,10 +13,13 @@ def place_cards(counters, mana, class_id, deck_cost, response):
     if len(counters) <= 18:
         size = 500
         water = Image.open("x2.png").resize((214, 121))
-    elif 19 <= len(counters) <= 32:
+    elif len(counters) <= 21:
+        size = 428
+        water = Image.open("x2.png").resize((180, 91))
+    elif len(counters) <= 32:
         size = 375
         water = Image.open("x2.png").resize((141, 80))
-    else:
+    elif len(counters) <= 43:
         size = 300
         water = Image.open("x2.png").resize((124, 70))
 
@@ -54,11 +57,13 @@ def place_cards(counters, mana, class_id, deck_cost, response):
                                          min(255, b + 45), a))
 
         if counters[card] == 2:
-            if size == 375:
-                image.paste(water, (col + 125, row + 487), mask=water)
-            elif size == 500:
+            if size == 500:
                 image.paste(water, (col + 150, row + 650), mask=water)
-            else:
+            elif size == 428:
+                image.paste(water, (col + 140, row + 555), mask=water)
+            elif size == 375:
+                image.paste(water, (col + 125, row + 487), mask=water)
+            elif size == 300:
                 image.paste(water, (col + 97, row + 390), mask=water)
 
         image.paste(im, (col, row), mask=im)

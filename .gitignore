@@ -7,3 +7,13 @@ venv/
 env/
 
 cards/
+
+
+test/
+test.py
+tests/
+test.png
+
+__pycache__/
+*.py[cod]
+*$py.class
