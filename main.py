@@ -13,7 +13,7 @@ from image_creator import create_picture
 
 client = commands.Bot(command_prefix="/",
                       activity=discord.Game(name="Analyzing decks"),
-                      intents=discord.Intents.all())
+                      intents=discord.Intents.default())
 
 @client.event
 async def on_ready():
