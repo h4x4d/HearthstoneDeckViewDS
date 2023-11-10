@@ -1,9 +1,9 @@
-from db.config import BATTLE_NET_TOKEN
+from db.config import CLIENT_ID, CLIENT_SECRET
 from framework import BlizzardAPI
 
 
 async def retrieve_deck(deck_code):
-    api = BlizzardAPI(BATTLE_NET_TOKEN)
+    api = BlizzardAPI(CLIENT_ID, CLIENT_SECRET)
     response = await api.get_from_code(deck_code)
     if "error" in response:
         print("error")

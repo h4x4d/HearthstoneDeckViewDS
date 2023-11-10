@@ -5,11 +5,13 @@ import requests
 
 class BlizzardAPI:
     def __init__(self,
-                 auth_token,
+                 client_id,
+                 client_secret,
                  locale="en_US",
                  url="https://us.api.blizzard.com/hearthstone"
                  ):
-        self.auth_token = auth_token
+        self.client_id = client_id
+        self.client_secret = client_secret
         self.access_token = self.convert_access_token()
         self.locale = locale
         self.url = url
@@ -17,15 +19,12 @@ class BlizzardAPI:
         self.session = requests.Session()
 
     def convert_access_token(self):
-        url = "https://us.battle.net/oauth/token"
+        url = "https://oauth.battle.net/token"
 
-        payload = "grant_type=client_credentials"
-        headers = {
-            "Authorization": f"Basic {self.auth_token}",
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
-
+        payload = {"grant_type": "client_credentials"}
+        auth = (self.client_id, self.client_secret)
+        response = requests.request("POST", url,
+                                    data=payload, auth=auth)
         return response.json()["access_token"]
 
     async def get(self, *args, **kwargs):
@@ -49,6 +48,9 @@ class BlizzardAPI:
             "access_token": self.access_token,
         }
         response = await self.get(self.url + "/deck", params=params)
+        if response.status_code >= 500:
+            response = await self.get(self.url + "/deck", params=params)
+
         json = response.json()
 
         return json

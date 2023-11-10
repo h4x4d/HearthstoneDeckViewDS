@@ -36,7 +36,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message: discord.message.Message):
-    try:
         if message.author.bot:
             return
         text = message.content.split()
@@ -65,8 +64,6 @@ async def on_message(message: discord.message.Message):
                 os.remove(f"{name}.png")
 
                 print(datetime.datetime.now() - start_time)
-    except Exception as e:
-        print(f"ERR: {e}")
 
 
 client.run(TOKEN)
