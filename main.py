@@ -2,10 +2,10 @@ import datetime
 import os
 import random
 
-from gevent.monkey import patch_all
-patch_all(thread=False, select=False)
+from patch import *
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 from db.config import TOKEN
@@ -15,6 +15,23 @@ client = commands.Bot(command_prefix="/",
                       activity=discord.Game(name="Analyzing decks"),
                       intents=discord.Intents.default())
 
+
+async def generate_and_save(deck_code):
+    image = await create_picture(deck_code)
+
+    if not image:
+        return
+
+    x, y = image.size
+    image = image.resize((int(x / 1.2), int(y / 1.2)))
+
+    name = random.randint(1000000, 10000000)
+
+    image.save(f"{name}.png", format="PNG")
+
+    return name
+
+
 @client.event
 async def on_ready():
     print("Logged in as")
@@ -22,6 +39,13 @@ async def on_ready():
     print(client.user.id)
     print(discord.__version__)
     print("------")
+
+    try:
+        synced = await client.tree.sync()
+        print(f"synced {len(synced)} commands")
+        print("\n\n---------\n\n")
+    except Exception as e:
+        print("sync error:", e)
 
     print("Servers connected to:")
     sum_servers, sum_members = 0, 0
@@ -34,36 +58,70 @@ async def on_ready():
     print("\n\n---------\n\n")
 
 
+@client.tree.command(name="deck", description="Generates picture of deck by"
+                                              'its code. Same as "/code"')
+@app_commands.describe(deck_code="Generates picture of deck by its code."
+                                 " May take a while")
+async def deck(interaction: discord.Interaction, deck_code: str):
+    await interaction.response.send_message("_Waiting for image to "
+                                            "generate... "
+                                            "It will be here soon_")
+    name = await generate_and_save(deck_code)
+
+    await interaction.edit_original_response(
+        content="",
+        attachments=[discord.File(f"{name}.png")]
+    )
+
+    os.remove(f"{name}.png")
+
+
+@client.tree.command(name="code", description="Generates picture of deck by "
+                                              'its code. Same as "/deck"')
+@app_commands.describe(deck_code="Generates picture of deck by its code."
+                                 " May take a while")
+async def code(interaction: discord.Interaction, deck_code: str):
+    await interaction.response.send_message("_Waiting for image to "
+                                            "generate... "
+                                            "It will be here soon_")
+    name = await generate_and_save(deck_code)
+
+    await interaction.edit_original_response(
+        content="",
+        attachments=[discord.File(f"{name}.png")]
+    )
+
+    os.remove(f"{name}.png")
+
+@client.command(name='deck')
+async def deck(ctx, deck_code):
+    name = await generate_and_save(deck_code)
+
+    await ctx.send(file=discord.File(f"{name}.png"))
+
+    os.remove(f"{name}.png")
+
+
 @client.event
 async def on_message(message: discord.message.Message):
-        if message.author.bot:
-            return
-        text = message.content.split()
+    if message.author.bot:
+        return
+    text = message.content.split()
 
-        start_time = datetime.datetime.now()
+    start_time = datetime.datetime.now()
 
-        for word in text:
-            if word[:2] == "AA":
-                ctx: discord.ext.commands.context.Context = \
-                    await client.get_context(message)
+    for word in text:
+        if word[:2] == "AA":
+            ctx: discord.ext.commands.context.Context = \
+                await client.get_context(message)
 
-                image = await create_picture(word)
+            name = await generate_and_save(word)
 
-                if not image:
-                    return
+            await ctx.send(file=discord.File(f"{name}.png"))
 
-                x, y = image.size
-                image = image.resize((int(x / 1.2), int(y / 1.2)))
+            os.remove(f"{name}.png")
 
-                name = random.randint(1000000, 10000000)
-
-                image.save(f"{name}.png", format="PNG")
-
-                await ctx.send(file=discord.File(f"{name}.png"))
-
-                os.remove(f"{name}.png")
-
-                print(datetime.datetime.now() - start_time)
+            print(datetime.datetime.now() - start_time)
 
 
 client.run(TOKEN)
