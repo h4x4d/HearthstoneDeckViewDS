@@ -8,23 +8,27 @@ class BlizzardAPI:
                  client_id,
                  client_secret,
                  locale="en_US",
-                 url="https://us.api.blizzard.com/hearthstone"
+                 url="https://us.api.blizzard.com/hearthstone",
+                 proxies=None
                  ):
+        if proxies is None:
+            proxies = {}
+
+        self.session = requests.Session()
+        self.session.proxies = proxies
+
         self.client_id = client_id
         self.client_secret = client_secret
         self.access_token = self.convert_access_token()
         self.locale = locale
         self.url = url
 
-        self.session = requests.Session()
-
     def convert_access_token(self):
         url = "https://oauth.battle.net/token"
 
         payload = {"grant_type": "client_credentials"}
         auth = (self.client_id, self.client_secret)
-        response = requests.request("POST", url,
-                                    data=payload, auth=auth)
+        response = self.session.post(url, data=payload, auth=auth)
         return response.json()["access_token"]
 
     async def get(self, *args, **kwargs):

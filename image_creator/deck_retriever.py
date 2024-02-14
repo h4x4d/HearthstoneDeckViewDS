@@ -1,9 +1,9 @@
-from db.config import CLIENT_ID, CLIENT_SECRET
+from db.config import CLIENT_ID, CLIENT_SECRET, PROXY
 from framework import BlizzardAPI
 
 
 async def retrieve_deck(deck_code):
-    api = BlizzardAPI(CLIENT_ID, CLIENT_SECRET)
+    api = BlizzardAPI(CLIENT_ID, CLIENT_SECRET, proxies=PROXY)
     response = await api.get_from_code(deck_code)
     if "error" in response:
         print("error")

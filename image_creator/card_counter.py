@@ -1,8 +1,4 @@
-from threader import to_thread
-
-
-@to_thread
-def count_cards(cards):
+async def count_cards(cards):
     counters = {}
     mana = {}
     for card in cards:

@@ -3,13 +3,11 @@ from PIL import Image, ImageDraw
 
 from db.config import FOLDER
 from db.font import FONT
-from threader import to_thread
 
 from .place_runes import place_runes
 
 
-@to_thread
-def place_cards(counters, mana, class_id, deck_cost, response):
+async def place_cards(counters, mana, class_id, deck_cost, response):
     if len(counters) <= 18:
         size = 500
         water = Image.open("x2.png").resize((214, 121))
@@ -19,7 +17,7 @@ def place_cards(counters, mana, class_id, deck_cost, response):
     elif len(counters) <= 32:
         size = 375
         water = Image.open("x2.png").resize((141, 80))
-    elif len(counters) <= 43:
+    else:
         size = 300
         water = Image.open("x2.png").resize((124, 70))
 
