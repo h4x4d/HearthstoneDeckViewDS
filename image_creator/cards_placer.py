@@ -68,9 +68,10 @@ async def place_cards(counters, mana, class_id, deck_cost, response, sideboard):
                 image.paste(water, (col + 97, row + 390), mask=water)
 
         image.paste(im, (col, row), mask=im)
-        for i in response["sideboardCards"]:
-            if i['sideboardCard']['slug'] == card:
-                stack = [j['slug'] for j in sorted(i['cardsInSideboard'], key=lambda c_: c_['manaCost'])] + stack
+        if "sideboardCards" in response:
+            for i in response["sideboardCards"]:
+                if i['sideboardCard']['slug'] == card:
+                    stack = [j['slug'] for j in sorted(i['cardsInSideboard'], key=lambda c_: c_['manaCost'])] + stack
 
         col += sizes[0]
         if col > 2900:
