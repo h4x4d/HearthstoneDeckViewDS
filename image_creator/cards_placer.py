@@ -7,14 +7,14 @@ from db.font import FONT
 from .place_runes import place_runes
 
 
-async def place_cards(counters, mana, class_id, deck_cost, response):
-    if len(counters) <= 18:
+async def place_cards(counters, mana, class_id, deck_cost, response, sideboard):
+    if len(counters) + len(sideboard) <= 18:
         size = 500
         water = Image.open("x2.png").resize((214, 121))
-    elif len(counters) <= 21:
+    elif len(counters) + len(sideboard) <= 21:
         size = 428
         water = Image.open("x2.png").resize((180, 91))
-    elif len(counters) <= 32:
+    elif len(counters) + len(sideboard) <= 32:
         size = 375
         water = Image.open("x2.png").resize((141, 80))
     else:
@@ -31,8 +31,11 @@ async def place_cards(counters, mana, class_id, deck_cost, response):
     temp = Image.open(f"backs/{class_id}.png")
     image = Image.new("RGBA", temp.size, (0, 0, 0, 0))
     image.paste(temp, (0, 0))
+    stack = list(counters.keys())
 
-    for card in counters:
+    while len(stack) > 0:
+        card = stack.pop(0)
+
         im = Image.open(f"{FOLDER}{card}.png").convert("RGBA")
 
         img = np.array(im)
@@ -51,10 +54,10 @@ async def place_cards(counters, mana, class_id, deck_cost, response):
                 for j in range(im.size[1]):
                     r, g, b, a = pixels[i, j]
                     im.putpixel((i, j), (min(255, r + 100),
-                                         min(255, g + 40),
-                                         min(255, b + 45), a))
+                                         min(255, g + 50),
+                                         min(255, b + 50), a))
 
-        if counters[card] == 2:
+        if card in counters and counters[card] == 2:
             if size == 500:
                 image.paste(water, (col + 150, row + 650), mask=water)
             elif size == 428:
@@ -65,6 +68,9 @@ async def place_cards(counters, mana, class_id, deck_cost, response):
                 image.paste(water, (col + 97, row + 390), mask=water)
 
         image.paste(im, (col, row), mask=im)
+        for i in response["sideboardCards"]:
+            if i['sideboardCard']['slug'] == card:
+                stack = [j['slug'] for j in sorted(i['cardsInSideboard'], key=lambda c_: c_['manaCost'])] + stack
 
         col += sizes[0]
         if col > 2900:

@@ -11,10 +11,10 @@ async def create_picture(deck_code):
         return None
 
     await download_cards(response["cards"] + sideboard)
-    counters, mana = await count_cards(response["cards"] + sideboard)
+    counters, mana = await count_cards(response["cards"])
 
     cost = await get_cost_of_deck(response["cards"] + sideboard)
 
-    image = await place_cards(counters, mana, deck_class, cost, response)
+    image = await place_cards(counters, mana, deck_class, cost, response, sideboard)
 
     return image

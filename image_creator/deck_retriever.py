@@ -13,9 +13,8 @@ async def retrieve_deck(deck_code):
     sideboard = []
 
     if "sideboardCards" in response:
-        sideboard = response["sideboardCards"][0]["cardsInSideboard"]
-        for i in sideboard:
-            i["slug"] += "-side"
+        for side in response["sideboardCards"]:
+            sideboard += side["cardsInSideboard"]
 
     if response["cardCount"] == 15 and len(response["cards"]) < 15:
 
@@ -29,5 +28,8 @@ async def retrieve_deck(deck_code):
         deck_class = int(str(response["class"]["id"]) + str(duels_class))
     else:
         deck_class = response["class"]["id"]
+
+    for i in sideboard:
+        i["slug"] += "-side"
 
     return response, deck_class, sideboard
