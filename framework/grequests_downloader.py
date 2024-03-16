@@ -1,4 +1,5 @@
 import grequests
+import requests
 
 from db.config import FOLDER
 from framework.wiki_downloader import download_from_wiki
@@ -10,7 +11,11 @@ class GRequestsDownloader:
             try:
                 photo.write(response.content)
             except AttributeError:
-                download_from_wiki(slug, name)
+                try:
+                    response = requests.get(response.url)
+                    photo.write(response.content)
+                except AttributeError:
+                    download_from_wiki(slug, name)
 
     def get_and_save_photos(self, responses, cards):
         for response, card in zip(responses, cards):
