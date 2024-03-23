@@ -1,3 +1,5 @@
+import pprint
+
 from db.config import CLIENT_ID, CLIENT_SECRET, PROXY
 from framework import BlizzardAPI
 
@@ -12,8 +14,14 @@ async def retrieve_deck(deck_code):
     duels_class = None
     sideboard = []
 
+    pprint.pp(response)
+
     if "sideboardCards" in response:
         for side in response["sideboardCards"]:
+            if side['sideboardCard']['id'] == 102983:
+                for i in range(len(response['cards'])):
+                    if response['cards'][i]['id'] == 102983:
+                        response['cards'][i]['manaCost'] = sum(i['manaCost'] for i in side["cardsInSideboard"])
             sideboard += side["cardsInSideboard"]
 
     if response["cardCount"] == 15 and len(response["cards"]) < 15:
