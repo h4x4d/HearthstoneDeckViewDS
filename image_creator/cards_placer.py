@@ -41,7 +41,6 @@ async def place_cards(counters, mana, class_id, deck_cost, response, sideboard):
         if card == '102983-zilliax-deluxe-000':
             try:
                 im = Image.open(f"zilliax/{response['zilliax']}.png").convert("RGBA")
-                card = ""
             except Exception as e:
                 print(e)
                 im = Image.open(f"{FOLDER}{card}.png").convert("RGBA")
