@@ -14,14 +14,17 @@ async def retrieve_deck(deck_code):
     duels_class = None
     sideboard = []
 
-    pprint.pp(response)
+    # pprint.pp(response)
 
     if "sideboardCards" in response:
         for side in response["sideboardCards"]:
             if side['sideboardCard']['id'] == 102983:
+                pprint.pp(side)
                 for i in range(len(response['cards'])):
                     if response['cards'][i]['id'] == 102983:
                         response['cards'][i]['manaCost'] = sum(i['manaCost'] for i in side["cardsInSideboard"])
+                        response['zilliax'] = '-'.join(map(str, sorted(
+                            [i['id'] for i in side["cardsInSideboard"] if i['isZilliaxFunctionalModule']])))
             sideboard += side["cardsInSideboard"]
 
     if response["cardCount"] == 15 and len(response["cards"]) < 15:
