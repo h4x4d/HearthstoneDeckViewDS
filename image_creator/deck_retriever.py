@@ -14,7 +14,7 @@ async def retrieve_deck(deck_code):
     duels_class = None
     sideboard = []
 
-    # pprint.pp(response)
+    pprint.pp(response)
 
     if "sideboardCards" in response:
         for side in response["sideboardCards"]:

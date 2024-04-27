@@ -21,7 +21,7 @@ async def place_cards(counters, mana, class_id, deck_cost, response, sideboard):
         size = 300
         water = Image.open("x2.png").resize((124, 70))
 
-    sizes = (size, int(size * 1.354))
+    sizes = (size, int(size * 1.35))
     row, col = 0, 0
 
     counters = [[i, counters[i]] for i in counters]
@@ -51,8 +51,14 @@ async def place_cards(counters, mana, class_id, deck_cost, response, sideboard):
         x0, y0, x1, y1 = idx[1].min(), idx[0].min(), idx[1].max(), idx[0].max()
 
         im = Image.fromarray(img[y0:y1 + 1, x0:x1 + 1, :])
+        x = size
+        y = round((im.size[1] / im.size[0]) * x)
+        # y = sizes[1]
+        if y > sizes[1]:
+            y = sizes[1]
+            x = round((im.size[0] / im.size[1]) * y)
 
-        im = im.resize(sizes)
+        im = im.resize((x, y))
 
         if "-side" in card:
             pixels = im.load()
@@ -78,7 +84,7 @@ async def place_cards(counters, mana, class_id, deck_cost, response, sideboard):
         if "sideboardCards" in response:
             for i in response["sideboardCards"]:
                 if i['sideboardCard']['slug'] == card:
-                    stack = [j['slug'] for j in sorted(i['cardsInSideboard'], key=lambda c_: c_['manaCost'])] + stack
+                    stack = [j['slug'] for j in sorted(i['cardsInSideboard'], key=lambda c_: c_['manaCost']) if not j['isZilliaxCosmeticModule']] + stack
 
         col += sizes[0]
         if col > 2900:
