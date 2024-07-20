@@ -27,20 +27,11 @@ async def retrieve_deck(deck_code):
                             [i['id'] for i in side["cardsInSideboard"] if i['isZilliaxFunctionalModule']])))
             sideboard += side["cardsInSideboard"]
 
-    if response["cardCount"] == 15 and len(response["cards"]) < 15:
-
+    if response["cardCount"] == 30 and len(response["cards"]) < 30:
         for card_id in response["invalidCardIds"]:
-            resp_card = await api.get_card_from_id(card_id)
             response["cards"].append(await api.get_card_from_id(card_id))
-
-        duels_class = resp_card["classId"]
-
-    if duels_class:
-        deck_class = int(str(response["class"]["id"]) + str(duels_class))
-    else:
-        deck_class = response["class"]["id"]
 
     for i in sideboard:
         i["slug"] += "-side"
 
-    return response, deck_class, sideboard
+    return response, response["class"]["id"], sideboard
