@@ -1,3 +1,3 @@
 from PIL import ImageFont
 
-FONT = ImageFont.truetype("neue.ttf", 128)
+FONT = ImageFont.truetype("belwe.ttf", 140)

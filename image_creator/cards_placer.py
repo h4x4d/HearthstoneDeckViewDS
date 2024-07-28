@@ -103,7 +103,7 @@ async def place_cards(counters, mana, class_id, deck_cost, response, sideboard):
             row += sizes[1] + 40
 
     draw = ImageDraw.ImageDraw(image)
-    draw.text((170, 2205), str(deck_cost), (255, 255, 255), FONT)
+    draw.text((170, 2150), str(deck_cost), (255, 255, 255), FONT, stroke_fill=(0, 0, 0), stroke_width=5)
 
     if class_id == 1:
         image = place_runes(image, response)
